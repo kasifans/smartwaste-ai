@@ -1,0 +1,7 @@
+config.py
+config.example.py
+__pycache__/
+database/waste.db
+uploads/
+.venv/
+*.pyc
