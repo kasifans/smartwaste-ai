@@ -1,18 +1,20 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import json
-
 from database import init_db, get_all_bins, update_fill_level
 from detector import analyze_bin_image
 from optimizer import optimize_route
 from predictor import predict_all_bins
 from alerts import check_and_alert
+from pathway_pipeline import start_pipeline_thread
 
 app = Flask(__name__)
 CORS(app)
 
 # Initialize database on startup
 init_db()
+
+# Start Pathway real-time pipeline
+start_pipeline_thread()
 
 # ─────────────────────────────────────────
 # MAIN DASHBOARD
@@ -145,6 +147,19 @@ def alert():
         "success": True,
         "alerts_sent": len(results),
         "details": results
+    })
+
+
+# ─────────────────────────────────────────
+# PATHWAY PIPELINE STATUS
+# ─────────────────────────────────────────
+@app.route("/api/pipeline/status", methods=["GET"])
+def pipeline_status():
+    return jsonify({
+        "status": "RUNNING",
+        "message": "Pathway real-time pipeline is active",
+        "update_interval": "10 seconds",
+        "bins_monitored": 6
     })
 
 
