@@ -1,0 +1,8 @@
+flask
+flask-cors
+opencv-python-headless
+ortools
+twilio
+numpy==1.26.4
+Pillow
+gunicorn
