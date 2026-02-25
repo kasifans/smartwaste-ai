@@ -71,6 +71,21 @@ def get_all_bins():
     return bins
 
 
+def update_fill_level(bin_id, fill_level):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE bins SET fill_level=?, last_updated=CURRENT_TIMESTAMP WHERE id=?",
+        (fill_level, bin_id)
+    )
+    cursor.execute(
+        "INSERT INTO fill_history (bin_id, fill_level) VALUES (?,?)",
+        (bin_id, fill_level)
+    )
+    conn.commit()
+    conn.close()
+
+
 def get_fill_history(bin_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -81,3 +96,26 @@ def get_fill_history(bin_id):
     history = cursor.fetchall()
     conn.close()
     return history
+
+
+def get_alerts_count_today():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT COUNT(*) FROM alerts
+        WHERE sent_at > datetime('now', '-24 hours')
+    """)
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count
+
+
+def log_alert(bin_id, message):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO alerts (bin_id, message) VALUES (?,?)",
+        (bin_id, message)
+    )
+    conn.commit()
+    conn.close()
