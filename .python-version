@@ -3,4 +3,4 @@ New-Item .python-version -ItemType File
 
 Open `.python-version` and paste just this one line:
 ```
-3.12.10
+3.10.12
