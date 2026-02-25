@@ -5,10 +5,15 @@ import threading
 from datetime import datetime
 import os
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'database', 'waste.db')
+# Use /tmp for Render deployment, local database folder otherwise
+if os.environ.get("RENDER"):
+    DB_PATH = "/tmp/waste.db"
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), 'database', 'waste.db')
+
 
 # ─────────────────────────────────────────
-# BIN SENSOR SCHEMA (Pathway-compatible)
+# BIN SENSOR SCHEMA
 # ─────────────────────────────────────────
 class BinSensorSchema:
     def __init__(self, bin_id, fill_level, timestamp, location):
@@ -16,6 +21,7 @@ class BinSensorSchema:
         self.fill_level = fill_level
         self.timestamp = timestamp
         self.location = location
+
 
 # ─────────────────────────────────────────
 # LIVE SENSOR DATA GENERATOR
@@ -51,6 +57,7 @@ def generate_sensor_data():
         ))
 
     return readings
+
 
 # ─────────────────────────────────────────
 # STREAM PROCESSOR
@@ -89,8 +96,8 @@ def trigger_alert(bin_id, location, fill_level):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT COUNT(*) FROM alerts 
-            WHERE bin_id=? 
+            SELECT COUNT(*) FROM alerts
+            WHERE bin_id=?
             AND sent_at > datetime('now', '-30 minutes')
         """, (bin_id,))
         already_alerted = cursor.fetchone()[0] > 0
