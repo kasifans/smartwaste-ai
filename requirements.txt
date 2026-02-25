@@ -3,6 +3,6 @@ flask-cors
 opencv-python-headless==4.8.1.78
 ortools
 twilio
-numpy==1.26.4
+numpy>=2.0.2
 Pillow
 gunicorn
