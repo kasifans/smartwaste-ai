@@ -1,3 +1,6 @@
+## 🚀 Live Demo
+https://smartwaste-ai-07xy.onrender.com
+
 # 🗑️ SmartWaste AI
 ### AI-Powered Smart Waste Management System for Indian Municipalities
 
