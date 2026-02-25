@@ -1,6 +1,6 @@
 flask
 flask-cors
-opencv-python-headless
+opencv-python-headless==4.8.1.78
 ortools
 twilio
 numpy==1.26.4
