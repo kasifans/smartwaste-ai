@@ -71,16 +71,13 @@ def get_all_bins():
     return bins
 
 
-def update_fill_level(bin_id, fill_level):
+def get_fill_history(bin_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE bins SET fill_level=?, last_updated=CURRENT_TIMESTAMP WHERE id=?",
-        (fill_level, bin_id)
+        "SELECT fill_level, recorded_at FROM fill_history WHERE bin_id=? ORDER BY recorded_at DESC LIMIT 20",
+        (bin_id,)
     )
-    cursor.execute(
-        "INSERT INTO fill_history (bin_id, fill_level) VALUES (?,?)",
-        (bin_id, fill_level)
-    )
-    conn.commit()
+    history = cursor.fetchall()
     conn.close()
+    return history
